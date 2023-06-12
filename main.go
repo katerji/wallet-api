@@ -2,26 +2,35 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/katerji/UserAuthKit/controller"
+	"github.com/joho/godotenv"
 	"github.com/katerji/UserAuthKit/db"
+	"github.com/katerji/UserAuthKit/handler"
 )
 
 func main() {
-
+	initEnv()
 	initDB()
+	initWebServer()
+}
 
-	router := gin.Default()
-
-	router.GET(controller.LandingPath, controller.LandingController)
-
-	router.POST(controller.RegisterPath, controller.RegisterController)
-
+func initEnv() {
+	err := godotenv.Load()
+	if err != nil {
+		panic(err)
+	}
 }
 
 func initDB() {
-	client := db.GetDatabaseInstance()
+	client := db.GetDbInstance()
 	err := client.Ping()
 	if err != nil {
 		panic(err)
 	}
+}
+
+func initWebServer() {
+	router := gin.Default()
+
+	router.GET(handler.LandingPath, handler.LandingController)
+	router.POST(handler.RegisterPath, handler.RegisterController)
 }
