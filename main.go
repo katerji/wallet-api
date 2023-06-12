@@ -32,5 +32,10 @@ func initWebServer() {
 	router := gin.Default()
 
 	router.GET(handler.LandingPath, handler.LandingController)
-	router.POST(handler.RegisterPath, handler.RegisterController)
+	router.POST(handler.RegisterPath, handler.RegisterHandler)
+	router.POST(handler.LoginPath, handler.LoginHandler)
+	err := router.Run(":85")
+	if err != nil {
+		panic(err)
+	}
 }

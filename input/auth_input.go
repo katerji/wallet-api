@@ -1,6 +1,6 @@
 package input
 
-type CreateUserInput struct {
+type AuthInput struct {
 	Email    string
 	Password string
 }
