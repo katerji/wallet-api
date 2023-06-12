@@ -31,10 +31,9 @@ func getDbClient() (*Client, error) {
 	dbName := os.Getenv("DB_DATABASE")
 
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPass, dbHost, dbPort, dbName)
-	fmt.Println(dataSourceName)
+
 	db, err := sql.Open("mysql", dataSourceName)
 	if err != nil {
-		fmt.Println(err)
 		return &Client{}, err
 	}
 
@@ -46,7 +45,7 @@ func getDbClient() (*Client, error) {
 	}, nil
 }
 
-func (closerDb *Client) Fetch(query string, args ...any) []interface{} {
+func (closerDb *Client) Fetch(query string, args ...any) []any {
 	rows, err := closerDb.Query(query, args...)
 	if err != nil {
 		fmt.Println(err.Error())

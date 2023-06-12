@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/katerji/UserAuthKit/input"
+	"github.com/katerji/UserAuthKit/model"
 	"github.com/katerji/UserAuthKit/service"
 )
 
@@ -11,6 +12,11 @@ const LoginPath = "/auth/login"
 type LoginRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
+}
+
+type LoginResponse struct {
+	User  model.UserOutput `json:"user"`
+	Token string           `json:"access_token"`
 }
 
 func LoginHandler(c *gin.Context) {
@@ -30,6 +36,15 @@ func LoginHandler(c *gin.Context) {
 		sendErrorMessage(c, err.Error())
 		return
 	}
-	sendJSONResponse(c, user)
+	token, err := service.CreateJwt(user)
+	if err != nil {
+		sendErrorMessage(c, "")
+		return
+	}
+	response := LoginResponse{
+		User:  user.ToOutput(),
+		Token: token,
+	}
+	sendJSONResponse(c, response)
 	return
 }

@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"fmt"
 	"github.com/katerji/UserAuthKit/db"
 	"github.com/katerji/UserAuthKit/db/query"
 	"github.com/katerji/UserAuthKit/db/queryrow"
@@ -28,10 +27,9 @@ func (service AuthService) Login(input input.AuthInput) (model.User, error) {
 	row := client.QueryRow(query.GetUserByEmailQuery, input.Email)
 	err := row.Scan(&result.ID, &result.Email, &result.Password)
 	if err != nil {
-		fmt.Println(err)
 		return model.User{}, errors.New("phone number does not exist")
 	}
-	fmt.Println(result.Password, input.Password)
+
 	if !validPassword(result.Password, input.Password) {
 		return model.User{}, errors.New("incorrect password")
 	}
