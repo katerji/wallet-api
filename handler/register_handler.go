@@ -6,7 +6,7 @@ import (
 	"github.com/katerji/UserAuthKit/service"
 )
 
-const RegisterPath = "/auth/register"
+const RegisterPath = "/register"
 
 const (
 	errorMessageEmailAlreadyExists = "Email already exists."

@@ -7,7 +7,7 @@ import (
 	"github.com/katerji/UserAuthKit/service"
 )
 
-const LoginPath = "/auth/login"
+const LoginPath = "/login"
 
 type LoginRequest struct {
 	Email    string `json:"email"`
@@ -36,7 +36,8 @@ func LoginHandler(c *gin.Context) {
 		sendErrorMessage(c, err.Error())
 		return
 	}
-	token, err := service.CreateJwt(user)
+	jwtService := service.JWTService{}
+	token, err := jwtService.CreateJwt(user)
 	if err != nil {
 		sendErrorMessage(c, "")
 		return

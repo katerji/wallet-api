@@ -9,7 +9,9 @@ import (
 	"os"
 )
 
-func VerifyToken(token string) (model.User, error) {
+type JWTService struct{}
+
+func (JWTService) VerifyToken(token string) (model.User, error) {
 	jwtSecret := os.Getenv("JWT_SECRET")
 	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
@@ -35,7 +37,7 @@ func VerifyToken(token string) (model.User, error) {
 
 }
 
-func CreateJwt(user model.User) (string, error) {
+func (JWTService) CreateJwt(user model.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":    user.ID,
 		"email": user.Email,
