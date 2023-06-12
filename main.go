@@ -40,6 +40,7 @@ func initWebServer() {
 	auth.POST(handler.LoginPath, handler.LoginHandler)
 
 	api.Use(middleware.GetAuthMiddleware())
+
 	api.GET(handler.UserInfoPath, handler.UserInfoHandler)
 
 	err := router.Run(":85")
