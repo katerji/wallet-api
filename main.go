@@ -1,14 +1,18 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/katerji/UserAuthKit/crons"
 	"github.com/katerji/UserAuthKit/db"
 	"github.com/katerji/UserAuthKit/handler"
 	"github.com/katerji/UserAuthKit/middleware"
+	"github.com/robfig/cron"
 )
 
 func main() {
 	initDB()
+	startCron()
 	initWebServer()
 }
 
@@ -39,4 +43,13 @@ func initWebServer() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func startCron() {
+	c := cron.New()
+	err := c.AddFunc("*/5 * * * *", crons.FetchAndStoreTokensFromAPI)
+	if err != nil {
+		fmt.Println(err)
+	}
+	c.Start()
 }
