@@ -11,26 +11,31 @@ import (
 type TokenService struct{}
 
 func (TokenService) GetTokens() ([]model.Token, error) {
+	tokens := []model.Token{}
 	rows, err := db.GetDbInstance().FetchRows(query.FetchTokensQuery)
+	defer rows.Close()
 	if err != nil {
-		return []model.Token{}, err
+		return tokens, err
 	}
-	var tokens []model.Token
-	for _, row := range rows {
-		token := model.TokenFromDB(row)
+	for rows.Next() {
+		token := model.Token{}
+		rows.Scan(&token.ID, &token.Name, &token.Ticker, &token.Symbol, &token.Price, &token.ChangePercentage)
 		tokens = append(tokens, token)
 	}
+
 	return tokens, nil
 }
 
 func (TokenService) GetUserFavorites(userId int) ([]model.Token, error) {
+	tokens := []model.Token{}
 	rows, err := db.GetDbInstance().FetchRows(query.FetchUserFavorites, userId)
+	defer rows.Close()
 	if err != nil {
-		return []model.Token{}, err
+		return tokens, err
 	}
-	var tokens []model.Token
-	for _, row := range rows {
-		token := model.TokenFromDB(row)
+	for rows.Next() {
+		token := model.Token{}
+		rows.Scan(&token.ID, &token.Name, &token.Ticker, &token.Symbol, &token.Price, &token.ChangePercentage)
 		tokens = append(tokens, token)
 	}
 

@@ -43,27 +43,6 @@ func getDbClient() (*Client, error) {
 	}, nil
 }
 
-func (client *Client) Fetch(query string, args ...any) []any {
-	rows, err := client.Query(query, args...)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	results := make([]interface{}, 0)
-	for rows.Next() {
-		var row interface{}
-
-		err = rows.Scan(&row)
-		results = append(results, row)
-		if err != nil {
-			fmt.Println(err.Error())
-		}
-	}
-	if err = rows.Err(); err != nil {
-		fmt.Println(err.Error())
-	}
-	return results
-}
-
 func (client *Client) Insert(query string, args ...any) (int, error) {
 	rows, err := client.Prepare(query)
 	if err != nil {
@@ -83,44 +62,12 @@ func (client *Client) Insert(query string, args ...any) (int, error) {
 	return int(insertId), nil
 }
 
-func (client *Client) FetchRows(query string, args ...any) ([]map[string]interface{}, error) {
+func (client *Client) FetchRows(query string, args ...any) (*sql.Rows, error) {
 	rows, err := client.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
-
-	columns, err := rows.Columns()
-	if err != nil {
-		return nil, err
-	}
-
-	result := []map[string]any{}
-	for rows.Next() {
-		row := make(map[string]interface{})
-		values := make([]interface{}, len(columns))
-
-		for i := range columns {
-			values[i] = new(interface{})
-		}
-
-		err := rows.Scan(values...)
-		if err != nil {
-			return nil, err
-		}
-
-		for i, column := range columns {
-			row[column] = *(values[i].(*interface{}))
-		}
-
-		result = append(result, row)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-
-	return result, nil
+	return rows, nil
 }
 
 func (client *Client) Exec(query string, args ...any) bool {
