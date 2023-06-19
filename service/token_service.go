@@ -23,6 +23,28 @@ func (TokenService) GetTokens() ([]model.Token, error) {
 	return tokens, nil
 }
 
+func (TokenService) GetUserFavorites(userId int) ([]model.Token, error) {
+	rows, err := db.GetDbInstance().FetchRows(query.FetchUserFavorites, userId)
+	if err != nil {
+		return []model.Token{}, err
+	}
+	var tokens []model.Token
+	for _, row := range rows {
+		token := model.TokenFromDB(row)
+		tokens = append(tokens, token)
+	}
+
+	return tokens, nil
+}
+
+func (TokenService) CreateFavorite(userId int, tokenId string) bool {
+	return db.GetDbInstance().Exec(query.InsertUserFavorite, userId, tokenId)
+}
+
+func (TokenService) DeleteFavorite(userId int, tokenId string) bool {
+	return db.GetDbInstance().Exec(query.DeleteUserFavorite, userId, tokenId)
+}
+
 func (TokenService) InsertTokens(response model.TokenAPIResponse) {
 	if len(response.Data) == 0 {
 		return

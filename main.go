@@ -34,11 +34,13 @@ func initWebServer() {
 	auth.POST(handler.RegisterPath, handler.RegisterHandler)
 	auth.POST(handler.LoginPath, handler.LoginHandler)
 	auth.POST(handler.RefreshTokenPath, handler.RefreshTokenHandler)
-	api.GET(handler.TokensPath, handler.TokensHandler)
 
 	api.Use(middleware.GetAuthMiddleware())
 
-	api.GET(handler.UserInfoPath, handler.UserInfoHandler)
+	api.GET(handler.TokensPath, handler.TokensHandler)
+	api.GET(handler.FavoritesPath, handler.FavoritesHandler)
+	api.POST(handler.FavoriteCreatePath, handler.FavoriteCreateHandler)
+	api.DELETE(handler.FavoriteDeletePath, handler.FavoriteDeleteHandler)
 
 	err := router.Run(":85")
 	if err != nil {

@@ -83,8 +83,8 @@ func (client *Client) Insert(query string, args ...any) (int, error) {
 	return int(insertId), nil
 }
 
-func (client *Client) FetchRows(query string) ([]map[string]interface{}, error) {
-	rows, err := client.Query(query)
+func (client *Client) FetchRows(query string, args ...any) ([]map[string]interface{}, error) {
+	rows, err := client.Query(query, args...)
 	if err != nil {
 		return nil, err
 	}
