@@ -13,8 +13,22 @@ import (
 
 type JWTService struct{}
 
-func (JWTService) VerifyToken(token string) (model.User, error) {
+type customJWTClaims struct {
+	UserOutput model.UserOutput `json:"user"`
+	ExpiresAt  int64            `json:"expires_at"`
+}
+
+func (jwtService JWTService) VerifyToken(token string) (model.User, error) {
 	jwtSecret := os.Getenv("JWT_SECRET")
+	return jwtService.validateToken(token, jwtSecret)
+}
+
+func (jwtService JWTService) VerifyRefreshToken(token string) (model.User, error) {
+	jwtSecret := os.Getenv("JWT_REFRESH_SECRET")
+	return jwtService.validateToken(token, jwtSecret)
+}
+
+func (jwtService JWTService) validateToken(token, jwtSecret string) (model.User, error) {
 	parsedToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
@@ -29,21 +43,24 @@ func (JWTService) VerifyToken(token string) (model.User, error) {
 		if err != nil {
 			return model.User{}, errors.New("error parsing token")
 		}
-		var user model.User
-		if err := json.Unmarshal(jsonClaims, &user); err != nil {
+		var customClaims customJWTClaims
+		if err := json.Unmarshal(jsonClaims, &customClaims); err != nil {
 			return model.User{}, errors.New("error parsing token")
 		}
-		return user, nil
+		expiresAt := time.Unix(customClaims.ExpiresAt, 0)
+		if expiresAt.Before(time.Now()) {
+			return model.User{}, errors.New("token expired")
+		}
+		return customClaims.UserOutput.ToUser(), nil
 	}
-	return model.User{}, errors.New("invalid token")
 
+	return model.User{}, errors.New("invalid token")
 }
 
-func (JWTService) CreateJwt(user model.User) (string, error) {
+func (jwtService JWTService) CreateJwt(user model.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":      user.ID,
-		"email":   user.Email,
-		"expires": getJWTExpiry(),
+		"user":       user.ToOutput(),
+		"expires_at": getJWTExpiry(),
 	})
 	jwtSecret := os.Getenv("JWT_SECRET")
 	tokenString, err := token.SignedString([]byte(jwtSecret))
@@ -53,10 +70,10 @@ func (JWTService) CreateJwt(user model.User) (string, error) {
 	return tokenString, nil
 }
 
-func (JWTService) CreateJwtRefreshToken(user model.User) (string, error) {
+func (jwtService JWTService) CreateRefreshJwt(user model.User) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":      user.ID,
-		"expires": getJWTRefreshExpiry(),
+		"user":       user.ToOutput(),
+		"expires_at": getJWTRefreshExpiry(),
 	})
 	jwtSecret := os.Getenv("JWT_REFRESH_SECRET")
 	tokenString, err := token.SignedString([]byte(jwtSecret))
@@ -79,5 +96,8 @@ func getJWTRefreshExpiry() int64 {
 }
 
 func expiryToTime(expiry int) int64 {
-	return time.Now().Add(time.Duration(expiry)).Unix()
+	now := time.Now()
+	duration := time.Duration(expiry) * time.Second
+	result := now.Add(duration)
+	return result.Unix()
 }
