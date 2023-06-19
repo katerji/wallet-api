@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"os"
+	"github.com/katerji/UserAuthKit/envs"
 	"sync"
 	"time"
 )
@@ -22,13 +22,12 @@ func GetDbInstance() *Client {
 	})
 	return instance
 }
-
 func getDbClient() (*Client, error) {
-	dbHost := os.Getenv("DB_HOST")
-	dbUser := os.Getenv("DB_USERNAME")
-	dbPort := os.Getenv("DB_PORT")
-	dbPass := os.Getenv("DB_PASSWORD")
-	dbName := os.Getenv("DB_DATABASE")
+	dbHost := envs.GetInstance().GetDbHost()
+	dbUser := envs.GetInstance().GetDbUser()
+	dbPort := envs.GetInstance().GetDbPort()
+	dbPass := envs.GetInstance().GetDbPassword()
+	dbName := envs.GetInstance().GetDbName()
 
 	dataSourceName := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", dbUser, dbPass, dbHost, dbPort, dbName)
 

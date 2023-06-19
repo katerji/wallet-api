@@ -2,23 +2,14 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"github.com/katerji/UserAuthKit/db"
 	"github.com/katerji/UserAuthKit/handler"
 	"github.com/katerji/UserAuthKit/middleware"
 )
 
 func main() {
-	initEnv()
 	initDB()
 	initWebServer()
-}
-
-func initEnv() {
-	err := godotenv.Load()
-	if err != nil {
-		panic(err)
-	}
 }
 
 func initDB() {

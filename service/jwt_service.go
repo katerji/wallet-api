@@ -5,7 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/katerji/UserAuthKit/envs"
 	"github.com/katerji/UserAuthKit/model"
+	"github.com/katerji/UserAuthKit/utils"
 	"os"
 	"strconv"
 	"time"
@@ -19,12 +21,12 @@ type customJWTClaims struct {
 }
 
 func (jwtService JWTService) VerifyToken(token string) (model.User, error) {
-	jwtSecret := os.Getenv("JWT_SECRET")
+	jwtSecret := envs.GetInstance().GetJWTToken()
 	return jwtService.validateToken(token, jwtSecret)
 }
 
 func (jwtService JWTService) VerifyRefreshToken(token string) (model.User, error) {
-	jwtSecret := os.Getenv("JWT_REFRESH_SECRET")
+	jwtSecret := envs.GetInstance().GetJWTRefreshToken()
 	return jwtService.validateToken(token, jwtSecret)
 }
 
@@ -86,18 +88,11 @@ func (jwtService JWTService) CreateRefreshJwt(user model.User) (string, error) {
 func getJWTExpiry() int64 {
 	expiryString := os.Getenv("JWT_EXPIRY")
 	expiry, _ := strconv.Atoi(expiryString)
-	return expiryToTime(expiry)
+	return utils.IntToUnixTime(expiry)
 }
 
 func getJWTRefreshExpiry() int64 {
 	expiryString := os.Getenv("JWT_REFRESH_EXPIRY")
 	expiry, _ := strconv.Atoi(expiryString)
-	return expiryToTime(expiry)
-}
-
-func expiryToTime(expiry int) int64 {
-	now := time.Now()
-	duration := time.Duration(expiry) * time.Second
-	result := now.Add(duration)
-	return result.Unix()
+	return utils.IntToUnixTime(expiry)
 }
