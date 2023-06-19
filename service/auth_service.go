@@ -27,7 +27,7 @@ func (service AuthService) Login(input input.AuthInput) (model.User, error) {
 	row := client.QueryRow(query.GetUserByEmailQuery, input.Email)
 	err := row.Scan(&result.ID, &result.Email, &result.Password)
 	if err != nil {
-		return model.User{}, errors.New("phone number does not exist")
+		return model.User{}, errors.New("email does not exist")
 	}
 
 	if !validPassword(result.Password, input.Password) {

@@ -2,23 +2,14 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"github.com/katerji/UserAuthKit/db"
 	"github.com/katerji/UserAuthKit/handler"
 	"github.com/katerji/UserAuthKit/middleware"
 )
 
 func main() {
-	initEnv()
 	initDB()
 	initWebServer()
-}
-
-func initEnv() {
-	err := godotenv.Load()
-	if err != nil {
-		panic(err)
-	}
 }
 
 func initDB() {
@@ -38,6 +29,7 @@ func initWebServer() {
 	auth := api.Group("/auth")
 	auth.POST(handler.RegisterPath, handler.RegisterHandler)
 	auth.POST(handler.LoginPath, handler.LoginHandler)
+	auth.POST(handler.RefreshTokenPath, handler.RefreshTokenHandler)
 
 	api.Use(middleware.GetAuthMiddleware())
 

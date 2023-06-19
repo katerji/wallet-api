@@ -15,8 +15,9 @@ type LoginRequest struct {
 }
 
 type LoginResponse struct {
-	User  model.UserOutput `json:"user"`
-	Token string           `json:"access_token"`
+	User         model.UserOutput `json:"user"`
+	Token        string           `json:"access_token"`
+	RefreshToken string           `json:"refresh_token"`
 }
 
 func LoginHandler(c *gin.Context) {
@@ -42,9 +43,15 @@ func LoginHandler(c *gin.Context) {
 		sendErrorMessage(c, "")
 		return
 	}
+	refreshToken, err := jwtService.CreateRefreshJwt(user)
+	if err != nil {
+		sendErrorMessage(c, "")
+		return
+	}
 	response := LoginResponse{
-		User:  user.ToOutput(),
-		Token: token,
+		User:         user.ToOutput(),
+		Token:        token,
+		RefreshToken: refreshToken,
 	}
 	sendJSONResponse(c, response)
 	return

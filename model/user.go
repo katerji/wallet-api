@@ -6,8 +6,5 @@ type User struct {
 }
 
 func (user User) ToOutput() UserOutput {
-	return UserOutput{
-		ID:    user.ID,
-		Email: user.Email,
-	}
+	return UserOutput(user)
 }
