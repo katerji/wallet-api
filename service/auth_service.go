@@ -18,14 +18,14 @@ func (service AuthService) Register(input input.AuthInput) (int, error) {
 		return 0, err
 	}
 	input.Password = password
-	return db.GetDbInstance().Insert(query.InsertUserQuery, input.Email, input.Password)
+	return db.GetDbInstance().Insert(query.InsertUserQuery, input.Email, input.Username, input.Password)
 }
 
 func (service AuthService) Login(input input.AuthInput) (model.User, error) {
 	result := queryrow.UserQueryRow{}
 	client := db.GetDbInstance()
 	row := client.QueryRow(query.GetUserByEmailQuery, input.Email)
-	err := row.Scan(&result.ID, &result.Email, &result.Password)
+	err := row.Scan(&result.ID, &result.Email, &result.Username, &result.Password)
 	if err != nil {
 		return model.User{}, errors.New("email does not exist")
 	}
@@ -35,8 +35,9 @@ func (service AuthService) Login(input input.AuthInput) (model.User, error) {
 	}
 
 	return model.User{
-		ID:    result.ID,
-		Email: result.Email,
+		ID:       result.ID,
+		Email:    result.Email,
+		Username: result.Username,
 	}, nil
 }
 
