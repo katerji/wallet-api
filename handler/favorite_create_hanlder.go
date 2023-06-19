@@ -18,7 +18,7 @@ type FavoriteCreateResponse struct {
 
 func FavoriteCreateHandler(c *gin.Context) {
 	var request FavoriteCreateRequest
-	err := c.BindJSON(request)
+	err := c.BindJSON(&request)
 	if err != nil {
 		sendBadRequest(c)
 		return

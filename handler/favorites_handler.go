@@ -24,6 +24,9 @@ func FavoritesHandler(c *gin.Context) {
 	for _, token := range tokens {
 		tokenOutputs = append(tokenOutputs, token.ToOutput())
 	}
-	sendJSONResponse(c, tokenOutputs)
+	response := map[string][]model.TokenOutput{
+		"favorites": tokenOutputs,
+	}
+	sendJSONResponse(c, response)
 	return
 }
