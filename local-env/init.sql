@@ -11,3 +11,14 @@ CREATE TABLE `user`
     UNIQUE KEY `email` (`email`),
     UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `token`
+(
+    `id`                      varchar(255) NOT NULL,
+    `name`                    varchar(255) NOT NULL,
+    `ticker`                  varchar(255) NOT NULL,
+    `symbol`                  varchar(255) NOT NULL,
+    `24hrs_change_percentage` float DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY                       `name` (`name`),
+    KEY                       `ticker` (`ticker`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
