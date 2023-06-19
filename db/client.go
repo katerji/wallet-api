@@ -95,7 +95,7 @@ func (client *Client) FetchRows(query string) ([]map[string]interface{}, error) 
 		return nil, err
 	}
 
-	result := []map[string]interface{}{}
+	result := []map[string]any{}
 	for rows.Next() {
 		row := make(map[string]interface{})
 		values := make([]interface{}, len(columns))
