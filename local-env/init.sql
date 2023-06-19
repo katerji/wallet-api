@@ -26,4 +26,14 @@ CREATE TABLE `token`
     PRIMARY KEY (`id`),
     KEY                 `name` (`name`),
     KEY                 `ticker` (`ticker`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `favorite`
+(
+    `id`         int      NOT NULL AUTO_INCREMENT,
+    `user_id`    int      NOT NULL,
+    `token_id`   int      NOT NULL,
+    `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY          `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
