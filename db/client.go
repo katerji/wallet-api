@@ -5,7 +5,6 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/katerji/UserAuthKit/envs"
-	"sync"
 	"time"
 )
 
@@ -14,14 +13,14 @@ type Client struct {
 }
 
 var instance *Client
-var once sync.Once
 
 func GetDbInstance() *Client {
-	once.Do(func() {
+	if instance == nil {
 		instance, _ = getDbClient()
-	})
+	}
 	return instance
 }
+
 func getDbClient() (*Client, error) {
 	dbHost := envs.GetInstance().GetDbHost()
 	dbUser := envs.GetInstance().GetDbUser()
