@@ -10,6 +10,19 @@ import (
 
 type TokenService struct{}
 
+func (TokenService) GetTokens() ([]model.Token, error) {
+	rows, err := db.GetDbInstance().FetchRows(query.FetchTokensQuery)
+	if err != nil {
+		return []model.Token{}, err
+	}
+	var tokens []model.Token
+	for _, row := range rows {
+		token := model.TokenFromDB(row)
+		tokens = append(tokens, token)
+	}
+	return tokens, nil
+}
+
 func (TokenService) InsertTokens(response model.TokenAPIResponse) {
 	if len(response.Data) == 0 {
 		return

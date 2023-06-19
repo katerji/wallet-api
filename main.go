@@ -34,6 +34,7 @@ func initWebServer() {
 	auth.POST(handler.RegisterPath, handler.RegisterHandler)
 	auth.POST(handler.LoginPath, handler.LoginHandler)
 	auth.POST(handler.RefreshTokenPath, handler.RefreshTokenHandler)
+	api.GET(handler.TokensPath, handler.TokensHandler)
 
 	api.Use(middleware.GetAuthMiddleware())
 

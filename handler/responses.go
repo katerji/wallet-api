@@ -31,3 +31,12 @@ func sendResponseMessage(c *gin.Context, message string) {
 func sendJSONResponse(c *gin.Context, json any) {
 	c.JSON(http.StatusOK, json)
 }
+
+func sendInternalErrorResponse(c *gin.Context, message string) {
+	if message == "" {
+		message = somethingWentWrongMessage
+	}
+	c.JSON(http.StatusInternalServerError, gin.H{
+		"message": message,
+	})
+}
