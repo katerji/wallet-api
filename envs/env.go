@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-type env struct {
+type Env struct {
 	jWTToken        string
 	jWTRefreshToken string
 	dbHost          string
@@ -15,9 +15,9 @@ type env struct {
 	dbName          string
 }
 
-func newEnv() *env {
+func newEnv() *Env {
 	godotenv.Load()
-	return &env{
+	return &Env{
 		jWTToken:        os.Getenv("JWT_SECRET"),
 		jWTRefreshToken: os.Getenv("JWT_REFRESH_SECRET"),
 		dbHost:          os.Getenv("DB_HOST"),
@@ -28,37 +28,37 @@ func newEnv() *env {
 	}
 }
 
-func (env *env) GetJWTToken() string {
+func (env *Env) GetJWTToken() string {
 	return env.jWTToken
 }
 
-func (env *env) GetJWTRefreshToken() string {
+func (env *Env) GetJWTRefreshToken() string {
 	return env.jWTRefreshToken
 }
 
-func (env *env) GetDbHost() string {
+func (env *Env) GetDbHost() string {
 	return env.dbHost
 }
 
-func (env *env) GetDbPassword() string {
+func (env *Env) GetDbPassword() string {
 	return env.dbPassword
 }
 
-func (env *env) GetDbUser() string {
+func (env *Env) GetDbUser() string {
 	return env.dbUser
 }
 
-func (env *env) GetDbPort() string {
+func (env *Env) GetDbPort() string {
 	return env.dbPort
 }
 
-func (env *env) GetDbName() string {
+func (env *Env) GetDbName() string {
 	return env.dbName
 }
 
-var instance *env
+var instance *Env
 
-func GetInstance() *env {
+func GetInstance() *Env {
 	if instance == nil {
 		instance = newEnv()
 	}
