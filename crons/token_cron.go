@@ -12,7 +12,7 @@ import (
 const cryptoCompareAPI = "https://min-api.cryptocompare.com/data/top/totaltoptiervolfull?limit=100&tsym=USD"
 
 func FetchAndStoreTokensFromAPI() {
-	tokens, ok := sendRequest(cryptoCompareAPI)
+	tokens, ok := fetchTokens()
 	if !ok {
 		return
 	}
@@ -20,10 +20,10 @@ func FetchAndStoreTokensFromAPI() {
 	tokenService.InsertTokens(tokens)
 }
 
-func sendRequest(url string) (model.TokenAPIResponse, bool) {
+func fetchTokens() (model.TokenAPIResponse, bool) {
 	client := &http.Client{}
 
-	req, err := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", cryptoCompareAPI, nil)
 	if err != nil {
 		fmt.Println("Error creating request:", err)
 		return model.TokenAPIResponse{}, false
@@ -36,7 +36,6 @@ func sendRequest(url string) (model.TokenAPIResponse, bool) {
 	}
 	defer resp.Body.Close()
 
-	// Read the response body
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Println("Error reading response body:", err)
