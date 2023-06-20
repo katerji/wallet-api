@@ -24,13 +24,11 @@ func RegistrationValidatorHandler(c *gin.Context) {
 		return
 	}
 	authService := service.AuthService{}
-	exists := authService.DoesEmailExist(request.Email)
-	if exists {
+	if authService.DoesEmailExist(request.Email) {
 		sendBadRequestWithMessage(c, "Email exists")
 		return
 	}
-	exists = authService.DoesUsernameExist(request.Username)
-	if exists {
+	if authService.DoesUsernameExist(request.Username) {
 		sendBadRequestWithMessage(c, "Username exists")
 		return
 	}
