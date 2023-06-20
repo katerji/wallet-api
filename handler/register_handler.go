@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/katerji/UserAuthKit/input"
 	"github.com/katerji/UserAuthKit/service"
@@ -39,7 +38,6 @@ func RegisterHandler(c *gin.Context) {
 	userService := service.AuthService{}
 	_, err = userService.Register(registerUserInput)
 	if err != nil {
-		fmt.Println(err)
 		sendErrorMessage(c, errorMessageEmailAlreadyExists)
 		return
 	}

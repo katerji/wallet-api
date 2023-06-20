@@ -12,6 +12,11 @@ func sendBadRequest(c *gin.Context) {
 		"message": "Bad Request.",
 	})
 }
+func sendBadRequestWithMessage(c *gin.Context, message string) {
+	c.JSON(http.StatusBadRequest, gin.H{
+		"message": message,
+	})
+}
 
 func sendErrorMessage(c *gin.Context, message string) {
 	if message == "" {
