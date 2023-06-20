@@ -32,6 +32,7 @@ func initWebServer() {
 
 	auth := api.Group("/auth")
 	auth.POST(handler.RegisterPath, handler.RegisterHandler)
+	auth.POST(handler.RegistrationValidatorPath, handler.RegistrationValidatorHandler)
 	auth.POST(handler.LoginPath, handler.LoginHandler)
 	auth.POST(handler.RefreshTokenPath, handler.RefreshTokenHandler)
 

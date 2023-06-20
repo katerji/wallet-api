@@ -1,6 +1,7 @@
 package service
 
 import (
+	"database/sql"
 	"errors"
 	"github.com/katerji/UserAuthKit/db"
 	"github.com/katerji/UserAuthKit/db/query"
@@ -39,6 +40,18 @@ func (service AuthService) Login(input input.AuthInput) (model.User, error) {
 		Email:    result.Email,
 		Username: result.Username,
 	}, nil
+}
+
+func (service AuthService) DoesEmailExist(email string) bool {
+	row := db.GetDbInstance().QueryRow(query.EmailExistsQuery, email)
+	err := row.Scan()
+	return err != sql.ErrNoRows
+}
+
+func (service AuthService) DoesUsernameExist(username string) bool {
+	row := db.GetDbInstance().QueryRow(query.UsernameExistsQuery, username)
+	err := row.Scan()
+	return err != sql.ErrNoRows
 }
 
 func hashPassword(password string) (string, error) {
