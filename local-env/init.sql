@@ -15,7 +15,8 @@ CREATE TABLE `user`
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 CREATE TABLE `token`
 (
-    `id`                varchar(255) NOT NULL,
+    `id`                int          NOT NULL AUTO_INCREMENT,
+    `token_id`          varchar(255) NOT NULL,
     `name`              varchar(255) NOT NULL,
     `ticker`            varchar(255) NOT NULL,
     `symbol`            varchar(255) NOT NULL,
@@ -24,6 +25,7 @@ CREATE TABLE `token`
     `created_on`        timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_on`        timestamp    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (`id`),
+    UNIQUE KEY `token_id` (`token_id`),
     KEY                 `name` (`name`),
     KEY                 `ticker` (`ticker`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

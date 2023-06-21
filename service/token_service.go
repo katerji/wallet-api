@@ -19,7 +19,7 @@ func (TokenService) GetTokens() ([]model.Token, error) {
 	}
 	for rows.Next() {
 		token := model.Token{}
-		rows.Scan(&token.ID, &token.Name, &token.Ticker, &token.Symbol, &token.Price, &token.ChangePercentage)
+		rows.Scan(&token.ID, &token.TokenID, &token.Name, &token.Ticker, &token.Symbol, &token.Price, &token.ChangePercentage)
 		tokens = append(tokens, token)
 	}
 
