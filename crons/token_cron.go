@@ -9,7 +9,7 @@ import (
 	"net/http"
 )
 
-const cryptoCompareAPI = "https://min-api.cryptocompare.com/data/top/totaltoptiervolfull?limit=100&tsym=USD"
+const cryptoCompareAPI = "https://min-api.cryptocompare.com/data/top/mktcapfull?limit=100&tsym=USD"
 
 func FetchAndStoreTokensFromAPI() {
 	tokens, ok := fetchTokens()
