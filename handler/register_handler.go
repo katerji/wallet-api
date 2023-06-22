@@ -30,17 +30,22 @@ func RegisterHandler(c *gin.Context) {
 		sendBadRequest(c)
 		return
 	}
-	registerUserInput := input.AuthInput{
+	authInput := input.AuthInput{
 		Email:    request.Email,
 		Password: request.Password,
 		Username: request.Username,
 	}
 	userService := service.AuthService{}
-	_, err = userService.Register(registerUserInput)
+	_, err = userService.Register(authInput)
 	if err != nil {
 		sendErrorMessage(c, errorMessageEmailAlreadyExists)
 		return
 	}
-	sendResponseMessage(c, userRegisteredSuccessfully)
+	response, err := login(authInput)
+	if err != nil {
+		sendBadRequestWithMessage(c, err.Error())
+		return
+	}
+	sendJSONResponse(c, response)
 	return
 }

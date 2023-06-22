@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/katerji/UserAuthKit/input"
 	"github.com/katerji/UserAuthKit/model"
@@ -24,35 +25,41 @@ func LoginHandler(c *gin.Context) {
 	request := &LoginRequest{}
 	err := c.BindJSON(request)
 	if err != nil {
+		fmt.Println(err)
 		sendBadRequest(c)
 		return
 	}
-	authService := service.AuthService{}
 	authInput := input.AuthInput{
 		Email:    request.Email,
 		Password: request.Password,
 	}
+	response, err := login(authInput)
+	if err != nil {
+		sendBadRequestWithMessage(c, err.Error())
+		return
+	}
+	sendJSONResponse(c, response)
+	return
+}
+
+func login(authInput input.AuthInput) (LoginResponse, error) {
+	authService := service.AuthService{}
 	user, err := authService.Login(authInput)
 	if err != nil {
-		sendErrorMessage(c, err.Error())
-		return
+		return LoginResponse{}, err
 	}
 	jwtService := service.JWTService{}
 	token, err := jwtService.CreateJwt(user)
 	if err != nil {
-		sendErrorMessage(c, "")
-		return
+		return LoginResponse{}, err
 	}
 	refreshToken, err := jwtService.CreateRefreshJwt(user)
 	if err != nil {
-		sendErrorMessage(c, "")
-		return
+		return LoginResponse{}, err
 	}
-	response := LoginResponse{
+	return LoginResponse{
 		User:         user.ToOutput(),
 		Token:        token,
 		RefreshToken: refreshToken,
-	}
-	sendJSONResponse(c, response)
-	return
+	}, nil
 }
