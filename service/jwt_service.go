@@ -67,7 +67,7 @@ func (jwtService JWTService) CreateJwt(user model.User) (string, error) {
 	jwtSecret := os.Getenv("JWT_SECRET")
 	tokenString, err := token.SignedString([]byte(jwtSecret))
 	if err != nil {
-		return "", err
+		return "", errors.New("error creating token")
 	}
 	return tokenString, nil
 }
@@ -80,7 +80,7 @@ func (jwtService JWTService) CreateRefreshJwt(user model.User) (string, error) {
 	jwtSecret := os.Getenv("JWT_REFRESH_SECRET")
 	tokenString, err := token.SignedString([]byte(jwtSecret))
 	if err != nil {
-		return "", err
+		return "", errors.New("error creating token")
 	}
 	return tokenString, nil
 }
