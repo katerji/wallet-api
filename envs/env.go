@@ -7,6 +7,7 @@ import (
 )
 
 type Env struct {
+	webServerPort   string
 	jWTToken        string
 	jWTRefreshToken string
 	dbHost          string
@@ -26,6 +27,7 @@ func newEnv() *Env {
 		dbUser:          os.Getenv("DB_USERNAME"),
 		dbPort:          os.Getenv("DB_PORT"),
 		dbName:          os.Getenv("DB_DATABASE"),
+		webServerPort:   os.Getenv("WEB_SERVER_PORT"),
 	}
 }
 
@@ -55,6 +57,10 @@ func (env *Env) GetDbPort() string {
 
 func (env *Env) GetDbName() string {
 	return env.dbName
+}
+
+func (env *Env) GetWebServerPort() string {
+	return env.webServerPort
 }
 
 var instance *Env

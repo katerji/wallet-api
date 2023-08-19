@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/katerji/UserAuthKit/crons"
 	"github.com/katerji/UserAuthKit/db"
+	"github.com/katerji/UserAuthKit/envs"
 	"github.com/katerji/UserAuthKit/handler"
 	"github.com/katerji/UserAuthKit/middleware"
 	"github.com/robfig/cron"
@@ -43,7 +44,8 @@ func initWebServer() {
 	api.POST(handler.FavoriteCreatePath, handler.FavoriteCreateHandler)
 	api.DELETE(handler.FavoriteDeletePath, handler.FavoriteDeleteHandler)
 
-	err := router.Run(":85")
+	address := fmt.Sprintf(":%s", envs.GetInstance().GetWebServerPort())
+	err := router.Run(address)
 	if err != nil {
 		panic(err)
 	}
